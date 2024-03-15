@@ -51,6 +51,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
         Companies,
         on_delete=models.CASCADE,
         related_name='users',
+        null=True,
         help_text='Tienda en la que se encuentra el usuario'
     )
 
