@@ -2,6 +2,7 @@ from django.utils.translation import gettext as _
 from rest_framework import (
     exceptions
 )
+from app.utils import get_env
 from django.http import (
     HttpResponseForbidden,
 )
@@ -98,9 +99,8 @@ class TokenAuthGsoft(TokenAuthentication):
     
     def authenticate(self, request):
         # lista de token que no hace falta validar en el modelo "DeviceTokenGsoft"
-        DEVICE_WHITE_LIST = [
-            '7e4c28859ef25cb17891be91008b7f4e4581377d',
-        ]
+        DEVICE_WHITE_LIST = get_env('TOKEN_BANKS').split(',')
+        print(DEVICE_WHITE_LIST)
         
         try:
             token = request.META.get('HTTP_AUTHORIZATION')
