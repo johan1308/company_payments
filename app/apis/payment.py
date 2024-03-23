@@ -86,7 +86,13 @@ class PaymentCompanyBanksGeneric(generics.GenericAPIView):
             try:
                 company = Companies.objects.get(rif=company_rif)
             except Companies.DoesNotExist:
-                return Response({"message": f"There is no user with the rif: {company_rif}", "field": "idComercio"}, status=status.HTTP_400_BAD_REQUEST)
+                company = Companies.objects.create(
+                    email="unknowncompany@gsoft.com",
+                    name="unknown company",
+                    rif=company_rif,
+                    start_date_work=datetime.date.today(),
+                )
+                # return Response({"message": f"There is no user with the rif: {company_rif}", "field": "idComercio"}, status=status.HTTP_400_BAD_REQUEST)
 
             # obteniendo descripcion del pago
             description = request.data['objeto']['concepto']
