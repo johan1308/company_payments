@@ -60,10 +60,10 @@ class PaymentCompanyBanksGeneric(generics.GenericAPIView):
         for field in fields:
             for object_field in object_fields:
                 if object_field not in request.data['objeto']:
-                    return Response({f"objeto.{object_field}": "this field is required"})
+                    return Response({f"objeto.{object_field}": "this field is required"}, status=status.HTTP_400_BAD_REQUEST)
 
             if field not in request.data:
-                return Response({field: "this field is required"})
+                return Response({field: "this field is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
 
