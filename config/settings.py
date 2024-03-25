@@ -85,9 +85,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 
-print(get_env(
-            'DB_NAME',
-            'test'
+print(get_env('DB_NAME',
         ))
 DATABASES = {
     'default': {
@@ -170,6 +168,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DATE_FORMAT': '%Y-%m-%d',
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
     ),

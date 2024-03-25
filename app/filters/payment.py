@@ -2,23 +2,16 @@ import django_filters
 from app.models import PaymentsCompany
 
 class PaymentsCompanyFilter(django_filters.FilterSet):
-
-    # date_field = django_filters.CharFilter(method='filter_date_field')
+    since = django_filters.DateFilter(field_name='date__date', lookup_expr='gte')
+    until = django_filters.DateFilter(field_name='date__date', lookup_expr='lte')
 
     class Meta:
         model = PaymentsCompany
         fields = (
             'bank_origin',
+            'bank_destiny',
+            'method',
+            'since',
+            'until',
+            'status',
         )
-        
-    # def filter_date_field(self, queryset, name, value):
-    #     since = self.data.get('since')
-    #     until = self.data.get('until')
-        
-    #     if since and until and value:
-    #         date_field = value.lower()
-    #         gte_param = f'{date_field}__date__gte'
-    #         lte_param = f'{date_field}__date__lte'
-    #         queryset = queryset.filter(**{gte_param: since, lte_param: until})
-        
-    #     return queryset

@@ -10,5 +10,6 @@ from app.models.authentication import (
 )
 from app.models.payment import (
     Banks,
-    PaymentsCompany,   
+    PaymentMethods,   
+    PaymentsCompany,
 )

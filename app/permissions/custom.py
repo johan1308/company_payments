@@ -100,7 +100,6 @@ class TokenAuthGsoft(TokenAuthentication):
     def authenticate(self, request):
         # lista de token que no hace falta validar en el modelo "DeviceTokenGsoft"
         DEVICE_WHITE_LIST = get_env('TOKEN_BANKS').split(',')
-        print(DEVICE_WHITE_LIST)
         
         try:
             token = request.META.get('HTTP_AUTHORIZATION')

@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from django.db import models
 from app.models.base import (
     Status,
@@ -126,3 +127,6 @@ class PaymentsCompany(BaseModel):
     class Meta:
         db_table = 'payments_company'
         ordering = ('-id',)
+        permissions = (
+            ('validate_paymentscompany', _('Can validate Payments Company')),
+        )
