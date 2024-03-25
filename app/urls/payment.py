@@ -10,6 +10,16 @@ from app.apis import (
 
 urlpatterns = [
     path(
+        '',
+        PaymentsCompanyList.as_view(),
+        name='payments_list',
+    ),
+    path(
+        '<int:id>/',
+        PaymentsCompanyRetrieveUpdate.as_view(),
+        name='payments_ru',
+    ),
+    path(
         'banks/',
         BanksGeneric.as_view(),
         name='banks_g',
@@ -29,15 +39,4 @@ urlpatterns = [
         PaymentsCompanyGeneric.as_view(),
         name='payments_validate',
     ),
-    path(
-        'company/',
-        PaymentsCompanyList.as_view(),
-        name='payments_list',
-    ),
-    path(
-        'company/<int:id>/',
-        PaymentsCompanyRetrieveUpdate.as_view(),
-        name='payments_ru',
-    ),
-
 ]
