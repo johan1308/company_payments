@@ -201,12 +201,14 @@ class PaymentsCompanyGeneric(generics.GenericAPIView):
                 # date__date=date, #TODO REVISAR
                 amount=str(amount),
                 reference__endswith=reference,
+                method_id=method,
                 sender=sender,
-                mobile=mobile,
-                method=method,
                 status=True,
                 company=user.company,
             )
+
+            if method == 1:
+                query = query.filter(mobile=mobile)
 
             if not query:
                 return Response(
@@ -363,7 +365,7 @@ class BanksGeneric(generics.GenericAPIView):
         ))
 
 
-# listar los metodos de pago
+# listar los metodos de pago+++
 class PaymentMethodsGenerics(generics.GenericAPIView):
     """
     Ruta para listar los bancos,
