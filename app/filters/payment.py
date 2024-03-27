@@ -14,4 +14,5 @@ class PaymentsCompanyFilter(django_filters.FilterSet):
             'since',
             'until',
             'status',
+            'company',
         )

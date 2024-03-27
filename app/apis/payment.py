@@ -4,6 +4,7 @@ from rest_framework import (
     permissions,
     serializers,
     generics,
+    filters,
     status,
 )
 from rest_framework.response import Response
@@ -245,9 +246,15 @@ class PaymentsCompanyList(generics.ListAPIView):
     queryset = PaymentsCompany.objects.all()
     serializer_class = PaymentsCompanySerializer
     filter_backends = (
+        filters.SearchFilter,
         DjangoFilterBackend,
     )
     filterset_class = PaymentsCompanyFilter
+    search_fields = (
+        'sender',
+        'reference',
+        'mobile',
+    )
     permission_classes = [
         permissions.IsAdminUser
         |
@@ -368,7 +375,7 @@ class BanksGeneric(generics.GenericAPIView):
         ))
 
 
-# listar los metodos de pago+++
+# listar los metodos de pagos
 class PaymentMethodsGenerics(generics.GenericAPIView):
     """
     Ruta para listar los bancos,
