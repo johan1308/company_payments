@@ -3,6 +3,7 @@ from app.models.user import (
 )
 from app.models.company import (
     Companies,
+    CompaniesOptions,
 )
 from app.models.authentication import (
     TokenGsoft,
@@ -10,6 +11,7 @@ from app.models.authentication import (
 )
 from app.models.payment import (
     Banks,
-    PaymentMethods,   
+    PaymentMethods,
     PaymentsCompany,
+    PaymentMethodsCompanies,
 )

@@ -10,10 +10,11 @@ from rest_framework import (
 from rest_framework.response import Response
 from app.permissions import HasModelPermission
 from app.models import (
+    Banks,
+    Companies,
     PaymentMethods,
     PaymentsCompany,
-    Companies,
-    Banks,
+    PaymentMethodsCompanies,
 )
 from django_filters.rest_framework import (
     DjangoFilterBackend,
@@ -23,6 +24,7 @@ from drf_spectacular.utils import (
     inline_serializer,
 )
 from app.serializers import (
+    PaymentMethodsSerializer,
     PaymentsCompanySerializer,
 )
 from app.filters import (
@@ -234,7 +236,7 @@ class PaymentsCompanyGeneric(generics.GenericAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# listar pagos de una tienda
+# listar pagos de una compañia
 class PaymentsCompanyList(generics.ListAPIView):
     """
     Ruta para listar pagos de una tienda,
@@ -242,7 +244,7 @@ class PaymentsCompanyList(generics.ListAPIView):
     o tener el permiso:
     - `view_paymentscompany` para GET,
     """
-    
+
     queryset = PaymentsCompany.objects.all()
     serializer_class = PaymentsCompanySerializer
     filter_backends = (
@@ -268,7 +270,13 @@ class PaymentsCompanyList(generics.ListAPIView):
         queryset = self.queryset
         user = self.request.user
         if not user.is_superuser:
-            queryset = queryset.filter(company=user.company)
+            payment_methods_company = PaymentMethodsCompanies.objects.filter(
+                company=user.company,
+                status_id=1,
+                payment_method__status_id=1
+            ).only('payment_method')
+
+            queryset = queryset.filter(company=user.company, method__in=payment_methods_company.values('payment_method'))
         return queryset
 
     @extend_schema(tags=["Payments"])
@@ -304,7 +312,13 @@ class PaymentsCompanyRetrieveUpdate(generics.RetrieveUpdateAPIView):
         queryset = self.queryset
         user = self.request.user
         if not user.is_superuser:
-            queryset = queryset.filter(company=user.company)
+            payment_methods_company = PaymentMethodsCompanies.objects.filter(
+                company=user.company,
+                status_id=1,
+                payment_method__status_id=1
+            ).only('payment_method')
+
+            queryset = queryset.filter(company=user.company, method__in=payment_methods_company.values('payment_method'))
         return queryset
 
     def get_serializer_context(self):
@@ -375,16 +389,17 @@ class BanksGeneric(generics.GenericAPIView):
         ))
 
 
-# listar los metodos de pagos
-class PaymentMethodsGenerics(generics.GenericAPIView):
+# listar y registrar metodos de pagos
+class PaymentMethodsGenerics(generics.ListCreateAPIView):
     """
-    Ruta para listar los bancos,
+    Ruta para listar y registrar metodos de pagos,
     debe ser administrador (`is_staff` es `True`)
     o tener el permiso:
     - `view_paymentmethods` para GET,
     """
 
     queryset = PaymentMethods.objects.all()
+    serializer_class = PaymentMethodsSerializer
     permission_classes = [
         permissions.IsAdminUser
         |
@@ -392,14 +407,27 @@ class PaymentMethodsGenerics(generics.GenericAPIView):
     ]
     model_permissions = {
         'GET': ['app.view_paymentmethods'],
+        'POST': ['app.add_paymentmethods'],
     }
-    
+
+
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_superuser:
+            companies = Companies.objects.filter(users=user)
+            return self.queryset.filter(companies__in=companies)
+        return self.queryse
+
+
     @extend_schema(tags=["Payments"]) 
     def get(self, request, *args, **kwargs):
-        query = self.get_queryset()
-        return Response(query.values(
-            'id',
-            'currency',
-            'name',
-            'status',
-        ))
+        return super().get(request, *args, **kwargs)
+
+
+    @extend_schema(tags=["Payments"])
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer_class(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

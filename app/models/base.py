@@ -1,6 +1,5 @@
 from django.db import models
 from simple_history.models import HistoricalRecords
-from app.models.user import Users
 
 
 class Status(models.Model):
@@ -21,6 +20,24 @@ class Status(models.Model):
         verbose_name_plural = 'Status'
         db_table = 'status'
         ordering = ('-id',)
+
+
+class Options(models.Model):
+    name = models.CharField(
+        max_length=50,
+        help_text='nombre'
+    )
+    status =models.BooleanField(default=True)
+    type = models.IntegerField(default=2)
+
+    def __str__(self) -> str:
+        return self.name
+
+    class Meta:
+        db_table = 'options'
+        ordering = ('name',)
+
+
 
 
 class BaseModel(models.Model):
@@ -44,13 +61,13 @@ class BaseModel(models.Model):
         help_text='Fecha de actualización del objeto'
     )
     created_by = models.ForeignKey(
-        Users,
+        'app.Users',
         on_delete=models.CASCADE,
         related_name='+',
         null=True
     )
     updated_by = models.ForeignKey(
-        Users,
+        'app.Users',
         on_delete=models.CASCADE,
         related_name='+',
         null=True

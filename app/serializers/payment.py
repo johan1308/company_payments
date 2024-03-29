@@ -10,12 +10,16 @@ from app.serializers.company import (
 
 
 class PaymentMethodsSerializer(serializers.ModelSerializer):
+    status_name = serializers.CharField(source='status.name', read_only=True, default=None)
+
     class Meta:
         model = PaymentMethods
         fields = (
             'id',
             'currency',
             'name',
+            'status',
+            'status_name',
         )
 
 

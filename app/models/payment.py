@@ -48,17 +48,41 @@ class PaymentMethods(BaseModel):
     )
     status = models.ForeignKey(
         Status,
+        default=1,
         on_delete=models.CASCADE,
-        help_text='Estado de Factura'
+        help_text='Estado del metodo de pago'
     )
 
-    def __str__(self) -> str:
-        return self.name
+    
+    class Meta:
+        db_table = 'payment_methods'
+        ordering = ('-id',)
+
+
+class PaymentMethodsCompanies(BaseModel):
+    updated_by = None
+    updated_at = None
+    company = models.ForeignKey(
+        Companies,
+        on_delete=models.CASCADE,
+        related_name='payment_methods_companies',
+        help_text='compañia',
+    )
+    payment_method = models.ForeignKey(
+        PaymentMethods,
+        on_delete=models.CASCADE,
+        related_name='companies_payment_methods',
+        help_text='metodo de pago'
+    )
+    status = models.ForeignKey(
+        Status,
+        default=1,
+        on_delete=models.CASCADE,
+        help_text='status del metodo de pago de la compalia'
+    )
 
     class Meta:
-        verbose_name = 'Payment Form'
-        verbose_name_plural = 'Payment Forms'
-        db_table = 'payment_methods'
+        db_table = 'payment_methods_companies'
         ordering = ('-id',)
 
 
