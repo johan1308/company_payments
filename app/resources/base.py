@@ -41,6 +41,7 @@ class BaseResource():
                     
                     value_id = list_value.get('id')
                     description = list_value.get('description')
+                    status_data = list_value.get('status')
                     try:
                         # Asignar los métodos de pago seleccionados a la tienda
                         value = ThirdModel.objects.get(pk=value_id)
@@ -61,6 +62,9 @@ class BaseResource():
 
                             if description:
                                 obj.description = description
+
+                            if status_data:
+                                obj.status_id = status_data
 
                             if created:
                                 obj.created_by = user

@@ -1,7 +1,8 @@
 from django.urls import path
 from app.apis import (
     StatusList,
-    OptionsList,
+    OptionsListCreate,
+    OptionsRetrieveUpdateDestroy,
 )
 
 urlpatterns = [
@@ -12,7 +13,12 @@ urlpatterns = [
     ),
     path(
         'options/',
-        OptionsList.as_view(),
+        OptionsListCreate.as_view(),
         name='options_l',
+    ),
+    path(
+        'options/<int:id>/',
+        OptionsRetrieveUpdateDestroy.as_view(),
+        name='options_rud',
     )
 ]

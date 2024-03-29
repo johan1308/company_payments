@@ -190,7 +190,7 @@ class CompaniesPaymentMethodsGeneric(
             name='CompaniesPaymentMethodsGeneric',
             fields={
                 'method': serializers.BooleanField(default=True),
-                'payment_methods': serializers.ListField(default=[{"id": 1}])
+                'payment_methods': serializers.ListField(default=[{"id": 1, "status": 1}])
             }
         )
     )
