@@ -4,6 +4,7 @@ from importlib import import_module
 class Resource():
     _resources = {
         'base': 'app.resources.base.BaseResource',
+        'company': 'app.resources.company.CompanyResource',
     }
 
     def __init__(self):

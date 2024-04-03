@@ -11,6 +11,7 @@ from app.apis.payment import (
     PaymentsCompanyRetrieveUpdate,
 )
 from app.apis.company import (
+    DashboardGeneric,
     CompaniesListCreate,
     CompaniesRetrieveUpdate,
     CompaniesPaymentMethodsGeneric,

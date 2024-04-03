@@ -24,6 +24,7 @@ from app.models.base import Options
 from app.serializers import CompaniesSerializer
 from drf_spectacular.utils import (
     extend_schema,
+    OpenApiParameter,
     inline_serializer,
 )
 
@@ -214,3 +215,71 @@ class CompaniesPaymentMethodsGeneric(
         )
 
         return Response({"message": _(message)}, status=status_code)
+
+
+# consultar el dashboar de una compañia
+class DashboardGeneric(generics.GenericAPIView):
+    """
+    Ruta para consultar el dashboar de una compañia,
+    debe ser administrador (`is_staff` es `True`)
+    o tener el permiso:
+    - `view_paymentscompany' para GET
+    """
+    queryset = Companies.objects.all()
+    permission_classes = [
+        permissions.IsAdminUser
+        |
+        (HasModelPermission)
+    ]
+    model_permissions = {
+        'GET': ['app.view_paymentscompany'],
+    }
+
+    def get_queryset(self):
+        query = self.queryset
+        user = self.request.user
+        
+        if not user.is_superuser:
+            query = query.filter(pk=user.company.pk)
+        return query
+
+    @extend_schema(
+        tags=["Companies"],
+        parameters=[
+            OpenApiParameter(
+                name="since",
+                description='Filtro fecha desde',
+                required=True,
+                type=str
+            ),
+            OpenApiParameter(
+                name="until",
+                description='Filtro fecha hasta',
+                required=True,
+                type=str
+            ),
+            OpenApiParameter(
+                name="bank",
+                description='Filtro por banco',
+                required=False,
+                type=int
+            ),
+            OpenApiParameter(
+                name="method",
+                description='Filtro por metodo de pago',
+                required=False,
+                type=int
+            ),
+        ])
+    def get(self, request, *args, **kwargs):
+        since = request.query_params.get('since')
+        until = request.query_params.get('until')
+        bank = request.query_params.get('bank')
+        payment_method = request.query_params.get('method')
+        company = request.user.company.pk
+
+        data = get_resource('company').statistics(
+            since, until, company, bank, payment_method
+        )
+
+        return Response(data)

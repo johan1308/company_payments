@@ -88,3 +88,9 @@ class BaseResource():
         return message, status_code
 
 
+    def dictfetchall(self, cursor, *args, **kwargs):
+        "devuelve todas los valores como lista"
+        columns = [col[0] for col in cursor.description]
+        data = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        return data
+        
