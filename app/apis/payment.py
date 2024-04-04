@@ -416,7 +416,7 @@ class PaymentMethodsGenerics(generics.ListCreateAPIView):
         if not user.is_superuser:
             companies = Companies.objects.filter(users=user)
             return self.queryset.filter(companies__in=companies)
-        return self.queryse
+        return self.queryset
 
 
     @extend_schema(tags=["Payments"]) 

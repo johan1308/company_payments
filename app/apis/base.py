@@ -55,6 +55,9 @@ class StatusList(generics.ListAPIView):
 
     @extend_schema(tags=["Base"])
     def get(self, request, *args, **kwargs):
+        if not request.query_params.get('type'):
+            return Response({"message": "field 'type' is required"})
+
         return super().get(request, *args, **kwargs)
 
 
