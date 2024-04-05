@@ -1,5 +1,6 @@
 from django.utils.translation import gettext as _
 from django.db import models
+from django.core.validators import RegexValidator
 from app.models.base import (
     Status,
     BaseModel,
@@ -74,16 +75,46 @@ class PaymentMethodsCompanies(BaseModel):
         related_name='companies_payment_methods',
         help_text='metodo de pago'
     )
+    bank = models.ForeignKey(
+        Banks,
+        on_delete=models.CASCADE,
+        help_text='Banco',
+        related_name='payment_methods_companies',
+    )
     status = models.ForeignKey(
         Status,
         default=1,
         on_delete=models.CASCADE,
         help_text='status del metodo de pago de la compalia'
     )
+    email = models.EmailField(
+        null=True,
+        max_length=255,
+        help_text='Correo electronico',
+    )
+    identification = models.CharField(
+        null=True,
+        max_length=20,
+        help_text='Cedula/rif',
+    )
+    phone = models.CharField(
+        null=True,
+        max_length=32,
+        help_text='Telefono',
+        validators=[
+            RegexValidator(
+                regex=r'^\+(?:[0-9]){6,32}[0-9]$',
+                message=_('Phone must be in the format +XXXXXXXXXX'),
+            ),
+        ],
+    )
+
+
 
     class Meta:
         db_table = 'payment_methods_companies'
         ordering = ('-id',)
+        unique_together = ('company', 'payment_method', 'bank', 'email', 'identification', 'phone',)
 
 
 class PaymentsCompany(BaseModel):

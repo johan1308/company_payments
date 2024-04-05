@@ -11,4 +11,5 @@ from app.serializers.company import (
 from app.serializers.payment import (
     PaymentMethodsSerializer,
     PaymentsCompanySerializer,
+    PaymentMethodsCompaniesSerializer,
 )

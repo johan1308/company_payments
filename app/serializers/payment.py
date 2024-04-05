@@ -3,6 +3,7 @@ from app.models.payment import (
     Banks,
     PaymentMethods,
     PaymentsCompany,
+    PaymentMethodsCompanies,
 )
 from app.serializers.company import (
     CompaniesSerializer,
@@ -32,6 +33,27 @@ class BanksSerializer(serializers.ModelSerializer):
             'code',
             'name',
         )
+
+
+class PaymentMethodsCompaniesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentMethodsCompanies
+        fields = (
+            'id',
+            'company',
+            'payment_method',
+            'bank',
+            'email',
+            'identification',
+            'phone',
+            'created_by',
+            'created_at',
+        )
+        extra_kwargs = {
+            'company': {
+                'required': False,
+            },
+        }
 
 
 class PaymentsCompanySerializer(serializers.ModelSerializer):

@@ -21,7 +21,11 @@ from app.models import (
     
 )
 from app.models.base import Options
-from app.serializers import CompaniesSerializer
+from app.serializers import (
+    CompaniesSerializer,
+    PaymentMethodsCompaniesSerializer,
+)
+
 from drf_spectacular.utils import (
     extend_schema,
     OpenApiParameter,
@@ -170,8 +174,6 @@ class CompaniesPaymentMethodsGeneric(
     o tener el permiso:
     - `view_paymentscompany' para GET
     """
-    lookup_field = 'id'
-    lookup_url_kwarg = 'id'
     model = PaymentMethodsCompanies
     filter_backends = (
         DjangoFilterBackend,
@@ -191,7 +193,7 @@ class CompaniesPaymentMethodsGeneric(
             name='CompaniesPaymentMethodsGeneric',
             fields={
                 'method': serializers.BooleanField(default=True),
-                'payment_methods': serializers.ListField(default=[{"id": 1, "status": 1}])
+                'payment_methods': serializers.ListField(default=[{"payment_method": 1, "bank": 1, "email": "f@gmail.com", "identification":  "v28458411", "phone": "+584129950904" }])
             }
         )
     )
@@ -201,20 +203,15 @@ class CompaniesPaymentMethodsGeneric(
         payment_methods = request.data.get('payment_methods', [])
         method = request.data.get('method')
         
-        message, status_code = get_resource('base').assign_record_to_model(
-            company_id,
-            Companies,
-            self.model,
-            PaymentMethods,
-            payment_methods,
-            'company',
-            'payment_method',
-            method,
-            True,
-            request.user
-        )
+        if method:
+            print(payment_methods)
+            serializer = PaymentMethodsCompaniesSerializer(data=payment_methods, many=True)
+            serializer.is_valid()
+            serializer.save()
+            # data = serializer.data
+            status_code = status.HTTP_201_CREATED
 
-        return Response({"message": _(message)}, status=status_code)
+        return Response({"data": ""}, status=status_code)
 
 
 # consultar el dashboar de una compañia
@@ -276,7 +273,7 @@ class DashboardGeneric(generics.GenericAPIView):
         until = request.query_params.get('until')
         bank = request.query_params.get('bank')
         payment_method = request.query_params.get('method')
-        company = request.user.company.pk
+        company = request.user.company.pk if request.user.company else None
 
         data = get_resource('company').statistics(
             since, until, company, bank, payment_method
