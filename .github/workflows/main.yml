@@ -1,0 +1,33 @@
+name: Deploy to Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          repository: Telecomunicaciones-G-Network/company_payments
+  
+      - name: SSH into server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/html/validator.movilpay.app/company_payments
+            source env/bin/activate
+            sudo git pull origin main
+            pip3 install -r requirements.txt
+            python3 manage.py makemigrations
+            python3 manage.py migrate
+            deactivate
+            sudo systemctl restart apache2
