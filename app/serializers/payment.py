@@ -59,7 +59,9 @@ class PaymentMethodsCompaniesSerializer(serializers.ModelSerializer):
 class PaymentsCompanySerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(source='company.name', read_only=True, default=None)
     bank_origin_name = serializers.CharField(source='bank_origin.name', read_only=True, default=None)
+    bank_origin_code = serializers.CharField(source='bank_origin.code', read_only=True, default=None)
     bank_destiny_name = serializers.CharField(source='bank_destiny.name', read_only=True, default=None)
+    bank_destiny_code = serializers.CharField(source='bank_destiny.code', read_only=True, default=None)
     method_name = serializers.CharField(source='method.name', read_only=True, default=None)
     
     class Meta:
@@ -77,8 +79,10 @@ class PaymentsCompanySerializer(serializers.ModelSerializer):
             'company_name',
             'bank_origin',
             'bank_origin_name',
+            'bank_origin_code',
             'bank_destiny',
             'bank_destiny_name',
+            'bank_destiny_code',
             'method',
             'method_name',
             'updated_at',
