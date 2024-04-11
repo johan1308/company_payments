@@ -197,21 +197,33 @@ class CompaniesPaymentMethodsGeneric(
             }
         )
     )
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
-
         company_id = kwargs.get('id')
         payment_methods = request.data.get('payment_methods', [])
         method = request.data.get('method')
-        
-        if method:
-            print(payment_methods)
-            serializer = PaymentMethodsCompaniesSerializer(data=payment_methods, many=True)
-            serializer.is_valid()
-            serializer.save()
-            # data = serializer.data
-            status_code = status.HTTP_201_CREATED
 
-        return Response({"data": ""}, status=status_code)
+        # agregar metodo de pago
+        if method:
+            for index, value in enumerate(payment_methods):
+                payment_methods[index]['company'] = company_id
+
+            serializer = PaymentMethodsCompaniesSerializer(data=payment_methods, many=True)
+            serializer.is_valid(raise_exception=True)
+
+            serializer.save(company_id=company_id)
+            data = serializer.data
+            status_code = status.HTTP_201_CREATED
+        # eliminar metodo de pago
+        else:
+
+            PaymentMethodsCompanies.objects.filter(id__in=payment_methods).delete()
+            data = {"message": "metodo de pago eliminado con exito"}
+            status_code = status.HTTP_200_OK
+            
+            
+
+        return Response(data, status=status_code)
 
 
 # consultar el dashboar de una compañia

@@ -1,5 +1,7 @@
 from django.utils.translation import gettext as _
 import datetime
+from datetime import datetime, date
+from decimal import Decimal
 from rest_framework import (
     permissions,
     serializers,
@@ -236,13 +238,14 @@ class PaymentsCompanyGeneric(generics.GenericAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# listar pagos de una compañia
-class PaymentsCompanyList(generics.ListAPIView):
+# listar y crear pagos de una empresa
+class PaymentsCompanyListCreate(generics.ListCreateAPIView):
     """
-    Ruta para listar pagos de una tienda,
+    Ruta para listar y crear pagos de una empresa,
     debe ser administrador (`is_staff` es `True`)
     o tener el permiso:
     - `view_paymentscompany` para GET,
+    - `add_paymentscompany` para POST,
     """
 
     queryset = PaymentsCompany.objects.all()
@@ -264,6 +267,7 @@ class PaymentsCompanyList(generics.ListAPIView):
     ]
     model_permissions = {
         'GET': ['app.view_paymentscompany'],
+        'POST': ['app.add_paymentscompany'],
     }
 
     def get_queryset(self):
@@ -282,6 +286,17 @@ class PaymentsCompanyList(generics.ListAPIView):
     @extend_schema(tags=["Payments"])
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+
+        # si no es superuser se asocia la compa;ia del usuario que hace la peticion 
+        if not user.is_superuser:
+            request.data['company'] = request.user.company.pk
+
+        request.data['created_by'] = request.user.pk
+        return super().post(request, *args, **kwargs)
+
 
 
 # ver y validar pago de una empresa

@@ -36,23 +36,31 @@ class BanksSerializer(serializers.ModelSerializer):
 
 
 class PaymentMethodsCompaniesSerializer(serializers.ModelSerializer):
+    status_name = serializers.CharField(source='status.name', read_only=True, default=None)
+    created_by_name = serializers.CharField(source='created_by.short_name', default=None, read_only=True)
+    payment_method_name = serializers.CharField(source='payment_method.name', default=None, read_only=True)
+
     class Meta:
         model = PaymentMethodsCompanies
         fields = (
             'id',
-            'company',
-            'payment_method',
-            'bank',
-            'email',
             'identification',
             'phone',
+            'email',
+            'bank',
+            'company',
+            'payment_method',
+            'payment_method_name',
+            'status',
+            'status_name',
             'created_by',
+            'created_by_name',
             'created_at',
         )
         extra_kwargs = {
             'company': {
                 'required': False,
-            },
+            }
         }
 
 
@@ -85,8 +93,15 @@ class PaymentsCompanySerializer(serializers.ModelSerializer):
             'bank_destiny_code',
             'method',
             'method_name',
+            'created_by',
             'updated_at',
         )
+        extra_kwargs = {
+            'created_by': {
+                'write_only': True,
+                'required': True,
+            }
+        }
 
     
     def __init__(self, *args, **kwargs):

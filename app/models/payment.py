@@ -171,7 +171,7 @@ class PaymentsCompany(BaseModel):
         max_length=300,
         blank=False,
         null=True,
-        help_text='nombre de la cuenta del zelle'
+        help_text='nombre del titular del zelle'
     )
     status = models.BooleanField(default=True)
 

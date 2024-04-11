@@ -25,6 +25,8 @@ class CompaniesOptionsSerializer(serializers.ModelSerializer):
             'created_at',
         )
 
+
+# este serializer esta dise;ado solo para relacionarse con el serializer CompaniesSerializer
 class PaymentMethodsCompaniesSerializer(serializers.ModelSerializer):
     status_name = serializers.CharField(source='status.name', read_only=True, default=None)
     created_by_name = serializers.CharField(source='created_by.short_name', default=None, read_only=True)
@@ -34,6 +36,10 @@ class PaymentMethodsCompaniesSerializer(serializers.ModelSerializer):
         model = PaymentMethodsCompanies
         fields = (
             'id',
+            'identification',
+            'phone',
+            'email',
+            'bank',
             'payment_method',
             'payment_method_name',
             'status',

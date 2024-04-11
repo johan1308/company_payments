@@ -4,7 +4,7 @@ from app.apis.authentication import (
 )
 from app.apis.payment import (
     BanksGeneric,
-    PaymentsCompanyList,
+    PaymentsCompanyListCreate,
     PaymentsCompanyGeneric,
     PaymentMethodsGenerics,
     PaymentCompanyBanksGeneric,

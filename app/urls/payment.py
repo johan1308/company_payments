@@ -1,7 +1,7 @@
 from django.urls import path
 from app.apis import (
     BanksGeneric,
-    PaymentsCompanyList,
+    PaymentsCompanyListCreate,
     PaymentsCompanyGeneric,
     PaymentMethodsGenerics,
     PaymentCompanyBanksGeneric,
@@ -11,7 +11,7 @@ from app.apis import (
 urlpatterns = [
     path(
         '',
-        PaymentsCompanyList.as_view(),
+        PaymentsCompanyListCreate.as_view(),
         name='payments_list',
     ),
     path(
