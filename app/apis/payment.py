@@ -1,7 +1,5 @@
 from django.utils.translation import gettext as _
 import datetime
-from datetime import datetime, date
-from decimal import Decimal
 from rest_framework import (
     permissions,
     serializers,
@@ -32,7 +30,6 @@ from app.serializers import (
 from app.filters import (
     PaymentsCompanyFilter,
 )
-from app.utils import bool_from_str
 
 
 # registrar pagos a la compañia desde los bancos
