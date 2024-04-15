@@ -425,7 +425,7 @@ class PaymentMethodsGenerics(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        if not user.is_superuser:
+        if not user.is_superuser and user.company:
             payment_methods = PaymentMethodsCompanies.objects.filter(company=user.company).values('payment_method')
             return self.queryset.filter(id__in=payment_methods)
         return self.queryset
