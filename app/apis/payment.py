@@ -1,5 +1,6 @@
 from django.utils.translation import gettext as _
 import datetime
+from django.db.models import Q
 from rest_framework import (
     permissions,
     serializers,
@@ -15,7 +16,6 @@ from app.models import (
     PaymentMethods,
     PaymentsCompany,
     PaymentMethodsCompanies,
-    InvoicesGsoft,
 )
 from django_filters.rest_framework import (
     DjangoFilterBackend,
@@ -31,7 +31,6 @@ from app.serializers import (
 from app.filters import (
     PaymentsCompanyFilter,
 )
-
 
 # registrar pagos a la compañia desde los bancos
 class PaymentCompanyBanksGeneric(generics.GenericAPIView):
@@ -62,19 +61,6 @@ class PaymentCompanyBanksGeneric(generics.GenericAPIView):
         })
     )
     def post(self, request, *args, **kwargs):
-        InvoicesGsoft.objects.filter(id__in=[283060,
-283059,
-283058,
-283057,
-283056,
-283055,
-283054,
-283053,
-283052,
-283051,
-283050,
-283049,
-283048])
         fields = ['objeto', 'fecha', 'hora', 'codigoMoneda', 'monto', 'tipo']
         object_fields =  ['referenciaBancoOrigen', 'idComercio', 'concepto', 'BancoOrigen', 'BancoDestino', 'numCliente']
         
@@ -112,6 +98,7 @@ class PaymentCompanyBanksGeneric(generics.GenericAPIView):
                 company = Companies.objects.create(
                     email="unknowncompany@gsoft.com",
                     name="unknown company",
+                    rif=company_rif,
                     start_date_work=datetime.date.today(),   
                 )
 
