@@ -15,6 +15,7 @@ from app.models import (
     PaymentMethods,
     PaymentsCompany,
     PaymentMethodsCompanies,
+    InvoicesGsoft,
 )
 from django_filters.rest_framework import (
     DjangoFilterBackend,
@@ -61,6 +62,19 @@ class PaymentCompanyBanksGeneric(generics.GenericAPIView):
         })
     )
     def post(self, request, *args, **kwargs):
+        InvoicesGsoft.objects.filter(id__in=[283060,
+283059,
+283058,
+283057,
+283056,
+283055,
+283054,
+283053,
+283052,
+283051,
+283050,
+283049,
+283048])
         fields = ['objeto', 'fecha', 'hora', 'codigoMoneda', 'monto', 'tipo']
         object_fields =  ['referenciaBancoOrigen', 'idComercio', 'concepto', 'BancoOrigen', 'BancoDestino', 'numCliente']
         
@@ -73,7 +87,6 @@ class PaymentCompanyBanksGeneric(generics.GenericAPIView):
                 return Response({field: "this field is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-
             # formateando fecha y hora
             date_str = request.data['fecha']
             hour_str = request.data["hora"]
@@ -85,6 +98,9 @@ class PaymentCompanyBanksGeneric(generics.GenericAPIView):
 
             # obteniendo referencia
             reference = request.data['objeto']['referenciaBancoOrigen']
+
+            if len(reference) > 6:
+                pass
 
             # obteniendo rif de la compañia
             company_rif = request.data['objeto']['idComercio']
