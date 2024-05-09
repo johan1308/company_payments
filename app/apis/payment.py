@@ -273,14 +273,22 @@ class PaymentsCompanyListCreate(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = self.queryset
         user = self.request.user
+        
         if not user.is_superuser:
             payment_methods_company = PaymentMethodsCompanies.objects.filter(
-                company=user.company,
+                Q(company=user.company)
+                |
+                Q(company__rif=user.identification),
                 status_id=1,
                 payment_method__status_id=1
             ).only('payment_method')
 
-            queryset = queryset.filter(company=user.company, method__in=payment_methods_company.values('payment_method'))
+            queryset = queryset.filter(
+                Q(company=user.company)
+                |
+                Q(company__rif=user.identification),
+                method__in=payment_methods_company.values('payment_method')
+            )
         return queryset
 
     @extend_schema(tags=["Payments"])
