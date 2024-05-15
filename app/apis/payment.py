@@ -207,12 +207,14 @@ class PaymentsCompanyGeneric(generics.GenericAPIView):
 
             query = PaymentsCompany.objects.filter(
                 # date__date=date, #TODO REVISAR
+                Q(company=user.company)
+                |
+                Q(company__rif=user.identification),
                 amount=str(amount),
                 reference__endswith=reference,
                 method_id=method,
                 sender=sender,
                 status=True,
-                company=user.company,
             )
 
             if method == 1:
