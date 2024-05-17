@@ -5,6 +5,8 @@ from app.models.base import (
     BaseModel,
 )
 from .user import Users
+from .base import Status
+
 # compañias
 class Companies(models.Model):
     description = models.TextField(
@@ -84,6 +86,13 @@ class UserCompanies(BaseModel):
         on_delete=models.CASCADE,
         related_name='companies',
         help_text='Compañía del usuario'
+    )
+    company_status = models.ForeignKey(
+        Status,
+        on_delete=models.CASCADE,
+        related_name='status',
+        null=False,
+        help_text='Status de la compañía'
     )
 
     class Meta:

@@ -299,7 +299,7 @@ class PaymentsCompanyListCreate(generics.ListCreateAPIView):
         queryset = self.queryset
         user = self.request.user
         if not user.is_superuser:
-            companies_to_user = user.companies.values("company")
+            companies_to_user = user.companies.filter(company_status_id = 1).values("company")
             payment_methods_company = PaymentMethodsCompanies.objects.filter(
                 company__in=companies_to_user,
                 status_id=1,
@@ -314,7 +314,7 @@ class PaymentsCompanyListCreate(generics.ListCreateAPIView):
 
     @extend_schema(tags=["Payments"])
     def get(self, request, *args, **kwargs):
-        
+
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
