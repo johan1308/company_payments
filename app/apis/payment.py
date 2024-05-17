@@ -298,10 +298,8 @@ class PaymentsCompanyListCreate(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = self.queryset
         user = self.request.user
-        
-        companies_to_user = user.companies.values("company")
-        print(companies_to_user)
         if not user.is_superuser:
+            companies_to_user = user.companies.values("company")
             payment_methods_company = PaymentMethodsCompanies.objects.filter(
                 company__in=companies_to_user,
                 status_id=1,
