@@ -36,7 +36,7 @@ from drf_spectacular.utils import (
 # listar compañias de una tienda
 class CompaniesListCreate(generics.ListCreateAPIView):
     """
-    Ruta para listar y crear compañias de una tienda,
+    Ruta para listar y crear compañías de una tienda,
     debe ser administrador (`is_staff` es `True`)
     o tener el permiso:
     - `view_companies` para GET,
@@ -70,8 +70,9 @@ class CompaniesListCreate(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = self.queryset
         user = self.request.user
+        
         if not user.is_superuser:
-            queryset = queryset.filter(pk=user.company)
+            queryset = queryset.filter(pk__in=user.company.all())
         return queryset
 
     @extend_schema(tags=["Companies"])
@@ -111,7 +112,7 @@ class CompaniesRetrieveUpdate(generics.RetrieveUpdateAPIView):
         queryset = self.queryset
         user = self.request.user
         if not user.is_superuser:
-            queryset = queryset.filter(pk=user.company)
+            queryset = queryset.filter(pk=user.companies)
         return queryset
 
     def get_serializer_context(self):
@@ -169,7 +170,7 @@ class CompaniesPaymentMethodsGeneric(
     generics.GenericAPIView,
 ):
     """
-    Ruta para asignar y eliminar metodo de pago a una compañia,
+    Ruta para asignar y eliminar método de pago a una compañía,
     debe ser administrador (`is_staff` es `True`)
     o tener el permiso:
     - `view_paymentscompany' para GET
@@ -218,7 +219,7 @@ class CompaniesPaymentMethodsGeneric(
         else:
 
             PaymentMethodsCompanies.objects.filter(id__in=payment_methods).delete()
-            data = {"message": "metodo de pago eliminado con exito"}
+            data = {"message": "metodo de pago eliminado con éxito"}
             status_code = status.HTTP_200_OK
             
             
@@ -247,9 +248,8 @@ class DashboardGeneric(generics.GenericAPIView):
     def get_queryset(self):
         query = self.queryset
         user = self.request.user
-        
         if not user.is_superuser:
-            query = query.filter(pk=user.company.pk)
+            query = query.filter(pk=user.company)
         return query
 
     @extend_schema(
@@ -285,7 +285,7 @@ class DashboardGeneric(generics.GenericAPIView):
         until = request.query_params.get('until')
         bank = request.query_params.get('bank')
         payment_method = request.query_params.get('method')
-        company = request.user.company.pk if request.user.company else None
+        company = request.user.companies if request.user.companies else None
 
         data = get_resource('company').statistics(
             since, until, company, bank, payment_method

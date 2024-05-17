@@ -4,7 +4,7 @@ from app.models.base import (
     Options,
     BaseModel,
 )
-
+from .user import Users
 # compañias
 class Companies(models.Model):
     description = models.TextField(
@@ -26,7 +26,7 @@ class Companies(models.Model):
     start_date_work = models.DateField(
         auto_now=False,
         auto_now_add=False,
-        help_text='fecha en la que empezo adquiri el servicio la empresa'
+        help_text='fecha en la que empezó adquirí el servicio la empresa'
     )
     status = models.ForeignKey(
         Status,
@@ -69,3 +69,26 @@ class CompaniesOptions(BaseModel):
     class Meta:
         db_table = 'companies_options'
         ordering = ('-id',)
+        
+class UserCompanies(BaseModel):
+    updated_by = None
+    updated_at = None
+    company = models.ForeignKey(
+        Companies,
+        on_delete=models.CASCADE,
+        related_name='users',
+        help_text='compañia',
+    )    
+    user = models.ForeignKey(
+        Users,
+        on_delete=models.CASCADE,
+        related_name='companies',
+        help_text='Compañía del usuario'
+    )
+
+    class Meta:
+        db_table = 'user_companies'
+        ordering = ('-id',)
+
+    def __str__(self) -> str:
+        return str(self.pk)

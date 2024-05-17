@@ -1,8 +1,8 @@
 import os
 from typing import Any, Union
 from dotenv import load_dotenv
-#load_dotenv('.env')
-load_dotenv('/var/www/html/validator.movilpay.app/company_payments/.env')
+load_dotenv('.env')
+#load_dotenv('/var/www/html/validator.movilpay.app/company_payments/.env')
 
 def get_env(name: str, default: Any = None) -> str:
 

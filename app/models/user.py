@@ -2,7 +2,7 @@ from django.db import models
 from app.models.managers import (
     UserManager,
 )
-from app.models.company import Companies
+
 from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
@@ -43,17 +43,11 @@ class Users(AbstractBaseUser, PermissionsMixin):
         max_length=255,
         unique=True,
         blank=False,
-        help_text='Correo electronico',
+        help_text='Correo electrónico',
     )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    company = models.ForeignKey(
-        Companies,
-        on_delete=models.CASCADE,
-        related_name='users',
-        null=True,
-        help_text='Tienda en la que se encuentra el usuario'
-    )
+    
 
     objects = UserManager()
 

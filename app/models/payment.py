@@ -121,7 +121,7 @@ class PaymentsCompany(BaseModel):
     company = models.ForeignKey(
         Companies,
         on_delete=models.CASCADE,
-        help_text='Compañia que esta adquiriendo el servicio',
+        help_text='Compañía que esta adquiriendo el servicio',
         related_name='payments_company',
     )
     bank_origin = models.ForeignKey(
