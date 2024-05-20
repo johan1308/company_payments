@@ -36,7 +36,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
         max_length=255,
         null=True,
         blank=False,
-        help_text='Numero de telefono',
+        help_text='Numero de teléfono',
     )
     email = models.EmailField(
         verbose_name='email',
